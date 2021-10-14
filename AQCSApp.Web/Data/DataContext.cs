@@ -6,11 +6,13 @@ namespace AQCSApp.Web.Data
 
     public class DataContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
+       
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
 
         }
-
+        public DbSet<User> Users { get; set; }
+        public DbSet<FishFamily> FishFamilies { get; set; }
+       // public object Products { get; internal set; }
     }
 }

@@ -32,6 +32,12 @@ namespace AQCSApp.Web
                 cfg.UseSqlServer(Configuration.GetConnectionString("AQCSDB"));
             });
 
+            services.AddTransient<SeedDb>(); 
+
+            //Dos formas de injectar la conexión
+            services.AddTransient<Repository>();//Este se crea y se destruye. A esta se la lleva el recolector de basura
+            services.AddScoped<IRepository, Repository>(); //Crea permanente durante toda la ejecuación. Esta no se la lleva el recolector de basura
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.

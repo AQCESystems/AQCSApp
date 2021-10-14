@@ -4,14 +4,16 @@ using AQCSApp.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AQCSApp.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20211013100900_FishesFamilyv3")]
+    partial class FishesFamilyv3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,7 +21,7 @@ namespace AQCSApp.Web.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("AQCSApp.Web.Data.Entities.FishFamily", b =>
+            modelBuilder.Entity("AQCSApp.Web.Data.Entities.FishesFamily", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -35,7 +37,7 @@ namespace AQCSApp.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FishFamilies");
+                    b.ToTable("FishesFamilies");
                 });
 
             modelBuilder.Entity("AQCSApp.Web.Data.Entities.User", b =>
