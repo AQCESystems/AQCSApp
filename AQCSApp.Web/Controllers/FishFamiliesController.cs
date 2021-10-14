@@ -1,22 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using AQCSApp.Web.Data;
+﻿using AQCSApp.Web.Data;
 using AQCSApp.Web.Data.Entities;
+using AQCSApp.Web.Helpers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace AQCSApp.Web.Controllers
 {
     public class FishFamiliesController : Controller
     {
-        public IRepository repository;
+        public readonly IRepository repository;
+        public readonly IUserHelper userHelper;
 
-        public FishFamiliesController(IRepository repository)
+        public FishFamiliesController(IRepository repository, IUserHelper userHelper)
         {
-           this.repository = repository;
+            this.repository = repository;
+            this.userHelper = userHelper;
         }
 
         // GET: FishesFamilies
@@ -34,7 +33,7 @@ namespace AQCSApp.Web.Controllers
             }
 
             var fishesFamily = this.repository.GetFishFamilies(id.Value);
-               
+
             if (fishesFamily == null)
             {
                 return NotFound();
@@ -50,17 +49,19 @@ namespace AQCSApp.Web.Controllers
         }
 
         // POST: FishesFamilies/Create
-         [HttpPost]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(FishFamily fishesFamily)
+        public async Task<IActionResult> Create(FishFamily fishFamily)
         {
             if (ModelState.IsValid)
             {
-                this.repository.AddFishFamily(fishesFamily);
+                //TODO: Cambiarlo por el usuario del login
+                fishFamily.User = await this.userHelper.GetUserByEmailAsync("pablomartinezros@gmail.com");
+                this.repository.AddFishFamily(fishFamily);
                 await this.repository.SaveAllAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(fishesFamily);
+            return View(fishFamily);
         }
 
         // GET: FishesFamilies/Edit/5
@@ -86,18 +87,14 @@ namespace AQCSApp.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, FishFamily fishFamily)
         {
-            if (id != fishFamily.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    this.repository.UpdateFishFamily(fishFamily);
-                   
-                    await this.repository.SaveAllAsync();
+                    //TODO: Cambiarlo por el usuario del login
+                    fishFamily.User = await this.userHelper.GetUserByEmailAsync("pablomartinezros@gmail.com");
+                   this.repository.UpdateFishFamily(fishFamily);
+                   await this.repository.SaveAllAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -124,7 +121,7 @@ namespace AQCSApp.Web.Controllers
             }
 
             var fishFamily = this.repository.GetFishFamilies(id.Value);
-                
+
             if (fishFamily == null)
             {
                 return NotFound();

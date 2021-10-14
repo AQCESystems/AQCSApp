@@ -1,16 +1,13 @@
 ﻿using AQCSApp.Web.Data;
+using AQCSApp.Web.Data.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AQCSApp.Web
 {
@@ -27,15 +24,28 @@ namespace AQCSApp.Web
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddIdentity<User, IdentityRole>(cfg =>
+            {
+                cfg.User.RequireUniqueEmail = true;
+                cfg.Password.RequireDigit = false;
+                cfg.Password.RequiredUniqueChars = 0;
+                cfg.Password.RequireLowercase = false;
+                cfg.Password.RequireNonAlphanumeric = false;
+                cfg.Password.RequireUppercase = false;
+                cfg.Password.RequiredLength = 6;
+            })
+        .AddEntityFrameworkStores<DataContext>();
+
+
             services.AddDbContext<DataContext>(cfg =>
             {
                 cfg.UseSqlServer(Configuration.GetConnectionString("AQCSDB"));
             });
 
-            services.AddTransient<SeedDb>(); 
+            services.AddTransient<SeedDb>();
 
             //Dos formas de injectar la conexión
-            services.AddTransient<Repository>();//Este se crea y se destruye. A esta se la lleva el recolector de basura
+            //services.AddTransient<Repository>();//Este se crea y se destruye. A esta se la lleva el recolector de basura
             services.AddScoped<IRepository, Repository>(); //Crea permanente durante toda la ejecuación. Esta no se la lleva el recolector de basura
 
             services.Configure<CookiePolicyOptions>(options =>
@@ -64,6 +74,7 @@ namespace AQCSApp.Web
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseAuthentication();
             app.UseCookiePolicy();
 
             app.UseMvc(routes =>

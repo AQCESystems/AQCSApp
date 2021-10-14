@@ -1,22 +1,14 @@
-﻿
-
+﻿using Microsoft.AspNetCore.Identity;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AQCSApp.Web.Data.Entities
 {
-  
-
-    public class User : ModelBase
+    public class User :IdentityUser
     {
-
-        public string Name { get; set; }
-        public string Password { get; set; }
-        public bool Admin { get; set; }
-        public bool Free { get; set; }
-        public bool Premiun { get; set; }
-        public DateTime SuscriptionBeginDate { get; set; }
-        public DateTime SuscruptionEndDate { get; set; }
-
-
+        public string FirstName { get; set;}
+        public string LastName { get; set; }
     }
 }
