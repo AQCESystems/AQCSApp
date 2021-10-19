@@ -13,26 +13,27 @@ namespace AQCSApp.Web.Data
     {
         private readonly DataContext context;
         private readonly IUserHelper userHelper;
-        private Random random;
+        //private Random random;
 
         public SeedDb(DataContext context, IUserHelper userHelper)
         {
             this.context = context;
             this.userHelper = userHelper;
-            this.random = new Random();
+           // this.random = new Random();
         }
 
         public async Task SeedAsync()
         {
             await this.context.Database.EnsureCreatedAsync();
 
+            //Add user
             var user = await this.userHelper.GetUserByEmailAsync("pablomartinezros@gmail.com");
             if (user == null)
             {
                 user = new User
                 {
                     FirstName = "Pablo",
-                    LastName = "MArtínez",
+                    LastName = "Martinez",
                     Email = "pablomartinezros@gmail.com",
                     UserName = "pablomartinezros@gmail.com",
                     PhoneNumber ="123123123"
@@ -45,7 +46,7 @@ namespace AQCSApp.Web.Data
                 }
             }
                     
-
+            //Add Families
             if (!this.context.FishFamilies.Any())
             {
                 this.AddFishFamily("Ciclidos",user);
@@ -59,7 +60,8 @@ namespace AQCSApp.Web.Data
         {
             this.context.FishFamilies.Add(new FishFamily
             {
-                Name = name,                
+                Name = name, 
+                User = user
             });
         }
     }

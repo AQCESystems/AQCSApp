@@ -9,6 +9,7 @@ namespace AQCSApp.Web.Data
     {
 
         public DbSet<FishFamily> FishFamilies { get; set; }
+        public DbSet<Country> Countries { get; set; }
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }

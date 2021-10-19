@@ -9,30 +9,31 @@ namespace AQCSApp.Web.Controllers
 {
     public class FishFamiliesController : Controller
     {
-        public readonly IRepository repository;
+
+        public readonly IFishFamilyRepository fishFamilyRepository;
         public readonly IUserHelper userHelper;
 
-        public FishFamiliesController(IRepository repository, IUserHelper userHelper)
+        public FishFamiliesController(IFishFamilyRepository fishFamilyRepository, IUserHelper userHelper)
         {
-            this.repository = repository;
+            this.fishFamilyRepository = fishFamilyRepository;
             this.userHelper = userHelper;
         }
 
         // GET: FishesFamilies
         public IActionResult Index()
         {
-            return View(this.repository.GetFishFamilies());
+            return View(this.fishFamilyRepository.GetAll());
         }
 
         // GET: FishesFamilies/Details/5
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var fishesFamily = this.repository.GetFishFamilies(id.Value);
+            var fishesFamily = await this.fishFamilyRepository.GetByIdAsync(id.Value);
 
             if (fishesFamily == null)
             {
@@ -57,22 +58,21 @@ namespace AQCSApp.Web.Controllers
             {
                 //TODO: Cambiarlo por el usuario del login
                 fishFamily.User = await this.userHelper.GetUserByEmailAsync("pablomartinezros@gmail.com");
-                this.repository.AddFishFamily(fishFamily);
-                await this.repository.SaveAllAsync();
+                await this.fishFamilyRepository.CreateAsync(fishFamily);
                 return RedirectToAction(nameof(Index));
             }
             return View(fishFamily);
         }
 
         // GET: FishesFamilies/Edit/5
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var fishfamily = this.repository.GetFishFamilies(id.Value);
+            var fishfamily = await this.fishFamilyRepository.GetByIdAsync(id.Value);
             if (fishfamily == null)
             {
                 return NotFound();
@@ -81,8 +81,6 @@ namespace AQCSApp.Web.Controllers
         }
 
         // POST: FishesFamilies/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, FishFamily fishFamily)
@@ -93,12 +91,11 @@ namespace AQCSApp.Web.Controllers
                 {
                     //TODO: Cambiarlo por el usuario del login
                     fishFamily.User = await this.userHelper.GetUserByEmailAsync("pablomartinezros@gmail.com");
-                   this.repository.UpdateFishFamily(fishFamily);
-                   await this.repository.SaveAllAsync();
+                    await this.fishFamilyRepository.UpdateAsync(fishFamily);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!this.repository.FishFamilyExists(fishFamily.Id))
+                    if (!await this.fishFamilyRepository.ExistAsync(fishFamily.Id))
                     {
                         return NotFound();
                     }
@@ -113,14 +110,14 @@ namespace AQCSApp.Web.Controllers
         }
 
         // GET: FishesFamilies/Delete/5
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var fishFamily = this.repository.GetFishFamilies(id.Value);
+            var fishFamily = await this.fishFamilyRepository.GetByIdAsync(id.Value);
 
             if (fishFamily == null)
             {
@@ -135,15 +132,10 @@ namespace AQCSApp.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var fishFamily = this.repository.GetFishFamilies(id);
-            this.repository.RemoveFishFamily(fishFamily);
-            await this.repository.SaveAllAsync();
+            var fishFamily = await this.fishFamilyRepository.GetByIdAsync(id);
+            await this.fishFamilyRepository.DeleteAsync(fishFamily);
             return RedirectToAction(nameof(Index));
         }
 
-        //private bool FishFamilyExists(int id)
-        //{
-        //    return this.repository.GetFishFamilies.Any(e => e.Id == id);
-        //}
     }
 }
