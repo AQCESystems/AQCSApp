@@ -1,4 +1,6 @@
-﻿
+﻿using Microsoft.EntityFrameworkCore;
+using AQCSApp.Web.Data.Entities;
+
 namespace AQCSApp.Web.Data
 {
     using AQCSApp.Web.Data.Entities;
@@ -13,6 +15,7 @@ namespace AQCSApp.Web.Data
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
+        public DbSet<AQCSApp.Web.Data.Entities.Fish> Fish { get; set; }
 
         
       

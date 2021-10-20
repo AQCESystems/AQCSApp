@@ -50,6 +50,7 @@ namespace AQCSApp.Web
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<IFishFamilyRepository, FishFamilyRepository>(); //Crea permanente durante toda la ejecuación. Esta no se la lleva el recolector de basura
             services.AddScoped<ICountryRepository, CountryRepository>();
+            services.AddScoped<IFishRepository, FishRepository>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
