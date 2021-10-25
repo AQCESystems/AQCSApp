@@ -12,8 +12,27 @@ namespace AQCSApp.Web.Data.Entities
         [Required]
         public string Name { get; set; }
 
-        public FishFamily Family { get; set; }
+        [Required]
+        public FishGenus   FishGenus { get; set; }
+
+        public FishFamily FishFamily { get; set; }
+
+        public string ImageUrl { get; set; }
 
         public User User { get; set; }
+
+        public string ImageFullPath
+        { 
+            get
+            {
+                if(string.IsNullOrEmpty(this.ImageUrl))
+                {
+                    return null;
+                }
+
+                return $"http://azurexxxxxxxx{this.ImageUrl.Substring(1)}";
+
+            }
+        }
     }
 }

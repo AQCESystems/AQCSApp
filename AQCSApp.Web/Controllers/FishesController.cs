@@ -1,8 +1,11 @@
 ﻿using AQCSApp.Web.Data;
 using AQCSApp.Web.Data.Entities;
 using AQCSApp.Web.Helpers;
+using AQCSApp.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AQCSApp.Web.Controllers
@@ -21,7 +24,7 @@ namespace AQCSApp.Web.Controllers
         // GET: FishesFamilies
         public IActionResult Index()
         {
-            return View(this.fishRepository.GetAll());
+            return View(this.fishRepository.GetAll().OrderBy(p => p.Name));
         }
 
         // GET: FishesFamilies/Details/5
@@ -32,14 +35,14 @@ namespace AQCSApp.Web.Controllers
                 return NotFound();
             }
 
-            var fishesFamily = await this.fishRepository.GetByIdAsync(id.Value);
+            var fishes = await this.fishRepository.GetByIdAsync(id.Value);
 
-            if (fishesFamily == null)
+            if (fishes == null)
             {
                 return NotFound();
             }
 
-            return View(fishesFamily);
+            return View(fishes);
         }
 
         // GET: FishesFamilies/Create
@@ -51,16 +54,45 @@ namespace AQCSApp.Web.Controllers
         // POST: FishesFamilies/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Fish fish)
+        public async Task<IActionResult> Create(FishViewModel view)
         {
             if (ModelState.IsValid)
             {
+                var path = string.Empty;
+
+                if (view.ImageFile != null && view.ImageFile.Length > 0)
+                {
+                    path = Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot\\images\\Fishes",
+                        view.ImageFile.FileName);
+
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await view.ImageFile.CopyToAsync(stream);
+                    }
+
+                    path = $"~/images/Fishes/{view.ImageFile.FileName}";
+                }
+                var fish = this.ToFish(view, path);
                 //TODO: Cambiarlo por el usuario del login
                 fish.User = await this.userHelper.GetUserByEmailAsync("pablomartinezros@gmail.com");
                 await this.fishRepository.CreateAsync(fish);
                 return RedirectToAction(nameof(Index));
             }
-            return View(fish);
+            return View(view);
+        }
+
+        private Fish ToFish(FishViewModel view, string path)
+        {
+            return new Fish
+            {
+                Id = view.Id,
+                ImageUrl = path,
+                Name = view.Name,
+                FishFamily = view.FishFamily,
+                User = view.User
+            };
         }
 
         // GET: FishesFamilies/Edit/5
@@ -71,30 +103,60 @@ namespace AQCSApp.Web.Controllers
                 return NotFound();
             }
 
-            var fishfamily = await this.fishRepository.GetByIdAsync(id.Value);
-            if (fishfamily == null)
+            var fish = await this.fishRepository.GetByIdAsync(id.Value);
+            if (fish == null)
             {
                 return NotFound();
             }
-            return View(fishfamily);
+            var view = this.ToFishViewModel(fish);
+            return View(view);
+        }
+
+        private FishViewModel ToFishViewModel(Fish fish)
+        {
+            return new FishViewModel
+            {
+                Id = fish.Id,
+                ImageUrl = fish.ImageUrl,
+                Name = fish.Name,
+                FishFamily = fish.FishFamily,
+                User = fish.User
+            };
         }
 
         // POST: FishesFamilies/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Fish fish)
+        public async Task<IActionResult> Edit(FishViewModel view)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var path = view.ImageUrl;
+
+                    if (view.ImageFile != null && view.ImageFile.Length > 0)
+                    {
+                        path = Path.Combine(
+                            Directory.GetCurrentDirectory(),
+                            "wwwroot\\images\\Fishes",
+                            view.ImageFile.FileName);
+
+                        using (var stream = new FileStream(path, FileMode.Create))
+                        {
+                            await view.ImageFile.CopyToAsync(stream);
+                        }
+
+                        path = $"~/images/Fishes/{view.ImageFile.FileName}";
+                    }
+                    var fish = this.ToFish(view, path);
                     //TODO: Cambiarlo por el usuario del login
                     fish.User = await this.userHelper.GetUserByEmailAsync("pablomartinezros@gmail.com");
                     await this.fishRepository.UpdateAsync(fish);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!await this.fishRepository.ExistAsync(fish.Id))
+                    if (!await this.fishRepository.ExistAsync(view.Id))
                     {
                         return NotFound();
                     }
@@ -105,7 +167,7 @@ namespace AQCSApp.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(fish);
+            return View(view);
         }
 
         // GET: FishesFamilies/Delete/5
@@ -116,14 +178,14 @@ namespace AQCSApp.Web.Controllers
                 return NotFound();
             }
 
-            var fishFamily = await this.fishRepository.GetByIdAsync(id.Value);
+            var fish = await this.fishRepository.GetByIdAsync(id.Value);
 
-            if (fishFamily == null)
+            if (fish== null)
             {
                 return NotFound();
             }
 
-            return View(fishFamily);
+            return View(fish);
         }
 
         // POST: FishesFamilies/Delete/5
@@ -131,8 +193,8 @@ namespace AQCSApp.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var fishFamily = await this.fishRepository.GetByIdAsync(id);
-            await this.fishRepository.DeleteAsync(fishFamily);
+            var fish = await this.fishRepository.GetByIdAsync(id);
+            await this.fishRepository.DeleteAsync(fish);
             return RedirectToAction(nameof(Index));
         }
 

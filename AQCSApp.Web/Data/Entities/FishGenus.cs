@@ -2,15 +2,16 @@
 
 namespace AQCSApp.Web.Data.Entities
 {
-    public class Country : IEntity
+    public class FishGenus : IEntity
     {
-        public int Id { get; set; }
-        [MaxLength(50, ErrorMessage = "The field {0} only can contain {1} characters length.")]
-        [Required]
-        [Display(Name = "Country")]
-        public string Name { get; set; }
 
-        public Continent Continent { get; set; }
+        public int Id { get; set; }
+
+        [MaxLength(50, ErrorMessage = "La longitud Máxima del campo {0} es de {1} caracteres")]
+        [Required]
+        public string Name { get; set; }
+        [Required]
+        public FishFamily FishFamily { get; set; }
         public User User { get; set; }
     }
 }

@@ -2,15 +2,15 @@
 
 namespace AQCSApp.Web.Data.Entities
 {
-    public class Country : IEntity
+    public class City : IEntity
     {
         public int Id { get; set; }
-        [MaxLength(50, ErrorMessage = "The field {0} only can contain {1} characters length.")]
-        [Required]
-        [Display(Name = "Country")]
-        public string Name { get; set; }
 
-        public Continent Continent { get; set; }
+        [Display(Name = "Name")]
+        [MaxLength(50, ErrorMessage = "La longitud Máxima del campo {0} es de {1} caracteres")]
+        [Required]
+        public string Name { get; set; }
+        public Province Province { get; set; }
         public User User { get; set; }
     }
 }

@@ -4,14 +4,16 @@ using AQCSApp.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AQCSApp.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20211020111509_FishImage")]
+    partial class FishImage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,37 +21,12 @@ namespace AQCSApp.Web.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("AQCSApp.Web.Data.Entities.Continent", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50);
-
-                    b.Property<int?>("ProvinceId");
-
-                    b.Property<string>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProvinceId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Continent");
-                });
-
             modelBuilder.Entity("AQCSApp.Web.Data.Entities.Country", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ContinentId");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50);
@@ -57,8 +34,6 @@ namespace AQCSApp.Web.Migrations
                     b.Property<string>("UserId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ContinentId");
 
                     b.HasIndex("UserId");
 
@@ -71,11 +46,9 @@ namespace AQCSApp.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("FishFamilyId");
+                    b.Property<int?>("FamilyId");
 
-                    b.Property<int>("FishGenusId");
-
-                    b.Property<string>("ImageUrl");
+                    b.Property<string>("ImageURL");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -85,13 +58,11 @@ namespace AQCSApp.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FishFamilyId");
-
-                    b.HasIndex("FishGenusId");
+                    b.HasIndex("FamilyId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Fishes");
+                    b.ToTable("Fish");
                 });
 
             modelBuilder.Entity("AQCSApp.Web.Data.Entities.FishFamily", b =>
@@ -111,52 +82,6 @@ namespace AQCSApp.Web.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("FishFamilies");
-                });
-
-            modelBuilder.Entity("AQCSApp.Web.Data.Entities.FishGenus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("FishFamilyId");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50);
-
-                    b.Property<string>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FishFamilyId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("FishGenus");
-                });
-
-            modelBuilder.Entity("AQCSApp.Web.Data.Entities.Province", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("CountryId");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50);
-
-                    b.Property<string>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Province");
                 });
 
             modelBuilder.Entity("AQCSApp.Web.Data.Entities.User", b =>
@@ -324,23 +249,8 @@ namespace AQCSApp.Web.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("AQCSApp.Web.Data.Entities.Continent", b =>
-                {
-                    b.HasOne("AQCSApp.Web.Data.Entities.Province", "Province")
-                        .WithMany()
-                        .HasForeignKey("ProvinceId");
-
-                    b.HasOne("AQCSApp.Web.Data.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
             modelBuilder.Entity("AQCSApp.Web.Data.Entities.Country", b =>
                 {
-                    b.HasOne("AQCSApp.Web.Data.Entities.Continent", "Continent")
-                        .WithMany()
-                        .HasForeignKey("ContinentId");
-
                     b.HasOne("AQCSApp.Web.Data.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
@@ -348,14 +258,9 @@ namespace AQCSApp.Web.Migrations
 
             modelBuilder.Entity("AQCSApp.Web.Data.Entities.Fish", b =>
                 {
-                    b.HasOne("AQCSApp.Web.Data.Entities.FishFamily", "FishFamily")
+                    b.HasOne("AQCSApp.Web.Data.Entities.FishFamily", "Family")
                         .WithMany()
-                        .HasForeignKey("FishFamilyId");
-
-                    b.HasOne("AQCSApp.Web.Data.Entities.FishGenus", "FishGenus")
-                        .WithMany()
-                        .HasForeignKey("FishGenusId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("FamilyId");
 
                     b.HasOne("AQCSApp.Web.Data.Entities.User", "User")
                         .WithMany()
@@ -364,29 +269,6 @@ namespace AQCSApp.Web.Migrations
 
             modelBuilder.Entity("AQCSApp.Web.Data.Entities.FishFamily", b =>
                 {
-                    b.HasOne("AQCSApp.Web.Data.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("AQCSApp.Web.Data.Entities.FishGenus", b =>
-                {
-                    b.HasOne("AQCSApp.Web.Data.Entities.FishFamily", "FishFamily")
-                        .WithMany()
-                        .HasForeignKey("FishFamilyId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("AQCSApp.Web.Data.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("AQCSApp.Web.Data.Entities.Province", b =>
-                {
-                    b.HasOne("AQCSApp.Web.Data.Entities.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryId");
-
                     b.HasOne("AQCSApp.Web.Data.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
