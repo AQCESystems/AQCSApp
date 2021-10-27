@@ -13,7 +13,7 @@ namespace AQCSApp.Web.Controllers.API
         }
 
         [HttpGet]
-        public IActionResult GetFishFamilies()
+        public IActionResult GetFishes()
         {
             return Ok(this.fishRepository.GetAllWithUsers());
         }

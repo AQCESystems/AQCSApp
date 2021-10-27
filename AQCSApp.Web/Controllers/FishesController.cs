@@ -4,6 +4,7 @@ using AQCSApp.Web.Helpers;
 using AQCSApp.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,13 +22,13 @@ namespace AQCSApp.Web.Controllers
             this.userHelper = userHelper;
         }
 
-        // GET: FishesFamilies
+        // GET: Fishes
         public IActionResult Index()
         {
             return View(this.fishRepository.GetAll().OrderBy(p => p.Name));
         }
 
-        // GET: FishesFamilies/Details/5
+        // GET: Fishes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -45,13 +46,13 @@ namespace AQCSApp.Web.Controllers
             return View(fishes);
         }
 
-        // GET: FishesFamilies/Create
+        // GET: Fishes/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: FishesFamilies/Create
+        // POST: Fishes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(FishViewModel view)
@@ -62,17 +63,20 @@ namespace AQCSApp.Web.Controllers
 
                 if (view.ImageFile != null && view.ImageFile.Length > 0)
                 {
+                    var guid = Guid.NewGuid().ToString();
+                    var file = $"{guid}.jpg";
+
                     path = Path.Combine(
                         Directory.GetCurrentDirectory(),
                         "wwwroot\\images\\Fishes",
-                        view.ImageFile.FileName);
+                        file);
 
                     using (var stream = new FileStream(path, FileMode.Create))
                     {
                         await view.ImageFile.CopyToAsync(stream);
                     }
 
-                    path = $"~/images/Fishes/{view.ImageFile.FileName}";
+                    path = $"~/images/Fishes/{file}";
                 }
                 var fish = this.ToFish(view, path);
                 //TODO: Cambiarlo por el usuario del login
@@ -90,12 +94,12 @@ namespace AQCSApp.Web.Controllers
                 Id = view.Id,
                 ImageUrl = path,
                 Name = view.Name,
-                FishFamily = view.FishFamily,
+                //FishFamily = view.FishFamily,
                 User = view.User
             };
         }
 
-        // GET: FishesFamilies/Edit/5
+        // GET: Fishes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -119,12 +123,12 @@ namespace AQCSApp.Web.Controllers
                 Id = fish.Id,
                 ImageUrl = fish.ImageUrl,
                 Name = fish.Name,
-                FishFamily = fish.FishFamily,
+                //FishFamily = fish.FishFamily,
                 User = fish.User
             };
         }
 
-        // POST: FishesFamilies/Edit/5
+        // POST: Fishes/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(FishViewModel view)
@@ -137,10 +141,21 @@ namespace AQCSApp.Web.Controllers
 
                     if (view.ImageFile != null && view.ImageFile.Length > 0)
                     {
+                        var guid = Guid.NewGuid().ToString();
+                        var file = $"{guid}.jpg";
+
                         path = Path.Combine(
                             Directory.GetCurrentDirectory(),
                             "wwwroot\\images\\Fishes",
-                            view.ImageFile.FileName);
+                            file);
+
+                        using (var stream = new FileStream(path, FileMode.Create))
+                        {
+                            await view.ImageFile.CopyToAsync(stream);
+                        }
+
+                        path = $"~/images/Fishes/{file}";
+
 
                         using (var stream = new FileStream(path, FileMode.Create))
                         {
@@ -170,7 +185,7 @@ namespace AQCSApp.Web.Controllers
             return View(view);
         }
 
-        // GET: FishesFamilies/Delete/5
+        // GET: Fishes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -188,7 +203,7 @@ namespace AQCSApp.Web.Controllers
             return View(fish);
         }
 
-        // POST: FishesFamilies/Delete/5
+        // POST: Fishes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

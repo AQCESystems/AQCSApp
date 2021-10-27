@@ -1,4 +1,5 @@
-﻿using AQCSApp.UIForms.Views;
+﻿using AQCSApp.UIForms.ViewModels;
+using AQCSApp.UIForms.Views;
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -11,6 +12,7 @@ namespace AQCSApp.UIForms
         {
             InitializeComponent();
 
+            MainViewModel.GetInstance().Login = new LoginViewModel();
             MainPage = new NavigationPage(new LoginPage());
         }
 

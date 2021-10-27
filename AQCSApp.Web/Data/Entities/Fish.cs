@@ -13,11 +13,9 @@ namespace AQCSApp.Web.Data.Entities
         public string Name { get; set; }
 
         [Required]
-        public FishGenus   FishGenus { get; set; }
+        public FishGenus FishGenus { get; set; }
 
-        public FishFamily FishFamily { get; set; }
-
-        public string ImageUrl { get; set; }
+         public string ImageUrl { get; set; }
 
         public User User { get; set; }
 

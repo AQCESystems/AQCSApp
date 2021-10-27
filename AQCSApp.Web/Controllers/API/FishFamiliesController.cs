@@ -15,7 +15,7 @@ namespace AQCSApp.Web.Controllers.API
         [HttpGet]
         public IActionResult GetFishFamilies()
         {
-            return Ok(this.fishFamilyRepository.GetAll());
+            return Ok(this.fishFamilyRepository.GetAllWithUsers());
         }
     }
 }

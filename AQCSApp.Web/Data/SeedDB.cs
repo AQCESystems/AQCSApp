@@ -64,6 +64,7 @@ namespace AQCSApp.Web.Data
                 User = user
             });
         }
+
     }
 
 }
