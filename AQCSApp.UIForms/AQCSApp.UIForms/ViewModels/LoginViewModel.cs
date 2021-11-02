@@ -45,7 +45,7 @@ namespace AQCSApp.UIForms.ViewModels
                     "Accept");
                 return;
             }
-            if(!this.Email.Equals("hola") || !this.Password.Equals("1"))
+            if(!this.Email.Equals("a") || !this.Password.Equals("1"))
             {
                 await Application.Current.MainPage.DisplayAlert(
                     "Error",

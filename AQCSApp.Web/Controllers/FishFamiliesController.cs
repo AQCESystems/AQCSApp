@@ -1,12 +1,14 @@
 ﻿using AQCSApp.Web.Data;
 using AQCSApp.Web.Data.Entities;
 using AQCSApp.Web.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace AQCSApp.Web.Controllers
 {
+    [Authorize] //Este parámetro indica que solo se puede accder si estas logado
     public class FishFamiliesController : Controller
     {
 

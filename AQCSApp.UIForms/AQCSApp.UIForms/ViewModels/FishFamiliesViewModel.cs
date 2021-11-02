@@ -34,7 +34,7 @@ namespace AQCSApp.UIForms.ViewModels
             this.iSRefreshing = true;
 
             var response = await this.apiService.GetListAsync<FishFamily>(
-                "https://aqcsappweb.azurewebsites.net",
+                "https://aqcsapp.azurewebsites.net",
                 "/api",
                 "/FishFamilies");
 
