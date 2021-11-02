@@ -58,8 +58,8 @@ namespace AQCSApp.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                //TODO: Cambiarlo por el usuario del login
-                fishFamily.User = await this.userHelper.GetUserByEmailAsync("pablomartinezros@gmail.com");
+                
+                fishFamily.User = await this.userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                 await this.fishFamilyRepository.CreateAsync(fishFamily);
                 return RedirectToAction(nameof(Index));
             }
@@ -91,8 +91,7 @@ namespace AQCSApp.Web.Controllers
             {
                 try
                 {
-                    //TODO: Cambiarlo por el usuario del login
-                    fishFamily.User = await this.userHelper.GetUserByEmailAsync("pablomartinezros@gmail.com");
+                    fishFamily.User = await this.userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                     await this.fishFamilyRepository.UpdateAsync(fishFamily);
                 }
                 catch (DbUpdateConcurrencyException)

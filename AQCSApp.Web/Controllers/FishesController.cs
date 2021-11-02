@@ -79,8 +79,7 @@ namespace AQCSApp.Web.Controllers
                     path = $"~/images/Fishes/{file}";
                 }
                 var fish = this.ToFish(view, path);
-                //TODO: Cambiarlo por el usuario del login
-                fish.User = await this.userHelper.GetUserByEmailAsync("pablomartinezros@gmail.com");
+                fish.User = await this.userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                 await this.fishRepository.CreateAsync(fish);
                 return RedirectToAction(nameof(Index));
             }
@@ -165,8 +164,7 @@ namespace AQCSApp.Web.Controllers
                         path = $"~/images/Fishes/{view.ImageFile.FileName}";
                     }
                     var fish = this.ToFish(view, path);
-                    //TODO: Cambiarlo por el usuario del login
-                    fish.User = await this.userHelper.GetUserByEmailAsync("pablomartinezros@gmail.com");
+                    fish.User = await this.userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                     await this.fishRepository.UpdateAsync(fish);
                 }
                 catch (DbUpdateConcurrencyException)
