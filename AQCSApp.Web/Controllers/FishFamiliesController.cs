@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace AQCSApp.Web.Controllers
 {
-    [Authorize] //Este parámetro indica que solo se puede accder si estas logado
+    [Authorize(Roles = "Admin")]
+    
     public class FishFamiliesController : Controller
     {
 
@@ -46,6 +47,8 @@ namespace AQCSApp.Web.Controllers
         }
 
         // GET: FishesFamilies/Create
+        [Authorize(Roles = "Admin"] //Este parámetro indica que solo se puede accder si estas logado y tienes Rol Admin
+
         public IActionResult Create()
         {
             return View();
@@ -67,6 +70,7 @@ namespace AQCSApp.Web.Controllers
         }
 
         // GET: FishesFamilies/Edit/5
+        [Authorize(Roles = "Admin"] //Este parámetro indica que solo se puede accder si estas logado y tienes Rol Admin
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -111,6 +115,7 @@ namespace AQCSApp.Web.Controllers
         }
 
         // GET: FishesFamilies/Delete/5
+        [Authorize(Roles = "Admin"] //Este parámetro indica que solo se puede accder si estas logado y tienes Rol Admin
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

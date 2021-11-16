@@ -26,6 +26,10 @@ namespace AQCSApp.Web.Data
         {
             await this.context.Database.EnsureCreatedAsync();
 
+            await this.userHelper.CheckRoleAsync("Admin");//Si no existe el rol Admin , lo crea.
+            await this.userHelper.CheckRoleAsync("Customer");//Si no existe el Rol Customer . lo crea.
+
+
             //Add user
             var user = await this.userHelper.GetUserByEmailAsync("pablomartinezros@gmail.com");
             if (user == null)
@@ -44,8 +48,16 @@ namespace AQCSApp.Web.Data
                 {
                     throw new InvalidOperationException("Could not create the user in seeder");
                 }
+
+                await this.userHelper.AddUserToRoleAsync(user, "Admin");//Asigna el rol Admin al usuario.
             }
-                    
+
+            var isInRole = await this.userHelper.IsUserInRoleAsync(user, "Admin");
+            if (!isInRole)
+            {
+                await this.userHelper.AddUserToRoleAsync(user, "Admin");
+            }
+                                     
             //Add Families
             if (!this.context.FishFamilies.Any())
             {
