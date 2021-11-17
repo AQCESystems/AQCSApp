@@ -33,21 +33,21 @@ namespace AQCSApp.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
 
             var fishesFamily = await this.fishFamilyRepository.GetByIdAsync(id.Value);
 
             if (fishesFamily == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
 
             return View(fishesFamily);
         }
 
         // GET: FishesFamilies/Create
-        [Authorize(Roles = "Admin"] //Este parámetro indica que solo se puede accder si estas logado y tienes Rol Admin
+        [Authorize(Roles = "Admin")] //Este parámetro indica que solo se puede accder si estas logado y tienes Rol Admin
 
         public IActionResult Create()
         {
@@ -70,7 +70,7 @@ namespace AQCSApp.Web.Controllers
         }
 
         // GET: FishesFamilies/Edit/5
-        [Authorize(Roles = "Admin"] //Este parámetro indica que solo se puede accder si estas logado y tienes Rol Admin
+        [Authorize(Roles = "Admin")] //Este parámetro indica que solo se puede accder si estas logado y tienes Rol Admin
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -115,7 +115,7 @@ namespace AQCSApp.Web.Controllers
         }
 
         // GET: FishesFamilies/Delete/5
-        [Authorize(Roles = "Admin"] //Este parámetro indica que solo se puede accder si estas logado y tienes Rol Admin
+        [Authorize(Roles = "Admin")] //Este parámetro indica que solo se puede accder si estas logado y tienes Rol Admin
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -141,6 +141,10 @@ namespace AQCSApp.Web.Controllers
             var fishFamily = await this.fishFamilyRepository.GetByIdAsync(id);
             await this.fishFamilyRepository.DeleteAsync(fishFamily);
             return RedirectToAction(nameof(Index));
+        }
+        public IActionResult ProductNotFound()
+        {
+            return this.View();
         }
 
     }
